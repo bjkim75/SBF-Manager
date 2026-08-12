@@ -70,3 +70,18 @@
 - 확인 필요: 조직별 최종 승인 단계, 개인정보 필드 범위, 보존기간, Jira 프로젝트·인증 방식, 실제 L3 기준 데이터의 권위 원천.
 
 - **SBF-06** WHEN 사용자가 SBF 버전을 선택해 CSV 내보내기를 실행하면 THE SYSTEM SHALL 해당 버전 스냅샷과 현재 필터 결과만 UTF-8 CSV로 생성하고 버전·기준일을 파일명과 SBF 버전 컬럼에 포함해야 한다.
+
+## 8. 첨부 Kiro 보완 요구사항
+
+- **SBF-07** WHEN 사용자가 계층 화면을 조회하면 THE SYSTEM SHALL Depth 1만 기본 펼침으로 표시하고 노드 토글과 표 동시 강조를 제공해야 한다.
+- **SBF-08** THE SYSTEM SHALL 표시 열을 선택·해제·초기화할 수 있게 하고 결과 없음 상태에 검색 초기화 수단을 제공해야 한다.
+- **CR-09** WHEN 검토자가 요청을 조회하면 THE SYSTEM SHALL 변경 전후 값을 병렬 표시하고 변경 필드 및 Depth 이동을 강조해야 한다.
+- **CR-10** WHEN 편집이 시작되면 THE SYSTEM SHALL 사용자와 만료시각을 포함한 30분 편집 잠금을 설정하고 비활성 만료 후 해제해야 한다.
+- **HIS-03** WHEN Task ID 이력을 조회하면 THE SYSTEM SHALL 담당자 변경을 포함한 최근 50건을 시간순으로 표시해야 한다.
+- **NOTI-02** THE SYSTEM SHALL 사용자별 알림의 읽음·안읽음 상태와 보완 내용을 저장하고 표시해야 한다.
+- **VER-01** WHEN 관리자가 버전 발행을 실행하면 THE SYSTEM SHALL 전체 마스터를 불변 스냅샷으로 저장하고 직접 입력 또는 마이너 자동 증가 버전을 부여해야 한다.
+- **VER-02** THE SYSTEM SHALL 발행일시, 발행자, 500자 이하 사유, 항목 수를 기록하고 발행일시 내림차순으로 표시해야 한다.
+- **VER-03** IF 발행 후 마스터가 변경되면 THEN THE SYSTEM SHALL 현재 상태를 `미발행 Draft`로 표시해야 한다.
+- **VER-04** WHEN 특정 버전을 다운로드하면 THE SYSTEM SHALL `SBF_v{버전번호}_{발행일}.csv` 파일명과 요구된 업무·담당·조직·Milestone·SB·L3 컬럼을 제공해야 한다.
+- **JIRA-03** THE SYSTEM SHALL 미반영·반영·반영실패 목록과 실패 사유, 반영 일시를 관리해야 한다.
+- **AUD-01** THE SYSTEM SHALL 모든 중요 행위에 대해 수행자, 역할, 일시, 대상, 결과와 상관 ID를 append-only 로그로 기록해야 한다.

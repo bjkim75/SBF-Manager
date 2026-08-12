@@ -31,9 +31,9 @@ test("TC-02 버전 선택 CSV 다운로드 계약을 제공한다",async()=>{
  assert.match(page,/headers=\['SBF 버전','업무ID','SUB ID'/);
  assert.match(page,/new Blob\(\['\\uFEFF'/);
  assert.match(page,/text\/csv;charset=utf-8/);
- assert.match(page,/SBF_master_\$\{version\}_2026-08-12\.csv/);
+ assert.match(page,/link\.download=`SBF_\$\{requestedVersion\}_/);
  assert.match(page,/replaceAll\('"','""'\)/);
- assert.match(page,/filtered\.map/);
+ assert.match(page,/exportItems\.map/);
 });
 
 test("TC-03 검색·필터·접근성·변경요청 UI가 존재한다",async()=>{
