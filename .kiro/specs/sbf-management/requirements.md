@@ -9,7 +9,6 @@
 - **AUTH-01** WHERE 사용자가 조회 권한만 보유한 경우 THE SYSTEM SHALL SBF 마스터와 공개 변경이력만 표시하고 변경 UI를 제공하지 않아야 한다.
 - **AUTH-02** WHEN 요청자가 변경요청을 작성하는 경우 THE SYSTEM SHALL 본인의 임시저장·제출·보완·취소 권한을 검증해야 한다.
 - **AUTH-03** WHILE 요청이 `검토 중`인 경우 THE SYSTEM SHALL 지정 검토자에게만 보완요청·승인·반려 기능을 제공해야 한다.
-- **AUTH-04** WHEN 관리자가 마스터 반영을 수행하는 경우 THE SYSTEM SHALL 행위자, 역할, 시각, 대상, 변경 전후 값을 감사 로그로 보존해야 한다.
 
 ## 2. SBF 마스터
 
@@ -84,4 +83,3 @@
 - **VER-03** IF 발행 후 마스터가 변경되면 THEN THE SYSTEM SHALL 현재 상태를 `미발행 Draft`로 표시해야 한다.
 - **VER-04** WHEN 특정 버전을 다운로드하면 THE SYSTEM SHALL `SBF_v{버전번호}_{발행일}.csv` 파일명과 요구된 업무·담당·조직·Milestone·SB·L3 컬럼을 제공해야 한다.
 - **JIRA-03** THE SYSTEM SHALL 미반영·반영·반영실패 목록과 실패 사유, 반영 일시를 관리해야 한다.
-- **AUD-01** THE SYSTEM SHALL 모든 중요 행위에 대해 수행자, 역할, 일시, 대상, 결과와 상관 ID를 append-only 로그로 기록해야 한다.

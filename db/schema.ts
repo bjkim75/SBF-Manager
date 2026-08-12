@@ -20,8 +20,3 @@ export const sbfVersions=sqliteTable("sbf_versions",{
  publishedAt:text("published_at").notNull().default(sql`CURRENT_TIMESTAMP`),publisherName:text("publisher_name").notNull(),reason:text("reason").notNull().default(""),
  itemCount:integer("item_count").notNull(),sourceFile:text("source_file").notNull(),sourceSheet:text("source_sheet").notNull().default("1. IA"),snapshotHash:text("snapshot_hash").notNull()
 },t=>[uniqueIndex("uq_sbf_versions_no").on(t.versionNo),uniqueIndex("uq_sbf_versions_hash").on(t.snapshotHash),index("idx_sbf_versions_published").on(t.publishedAt)]);
-
-export const auditLogs=sqliteTable("audit_logs",{
- id:integer("id").primaryKey({autoIncrement:true}),occurredAt:text("occurred_at").notNull().default(sql`CURRENT_TIMESTAMP`),actorName:text("actor_name").notNull(),actorRole:text("actor_role").notNull(),
- action:text("action").notNull(),targetType:text("target_type").notNull(),targetId:text("target_id").notNull(),result:text("result").notNull().default("SUCCESS"),correlationId:text("correlation_id").notNull(),detailJson:text("detail_json").notNull().default("{}")
-},t=>[index("idx_audit_logs_occurred").on(t.occurredAt),index("idx_audit_logs_target").on(t.targetType,t.targetId),uniqueIndex("uq_audit_logs_correlation").on(t.correlationId)]);

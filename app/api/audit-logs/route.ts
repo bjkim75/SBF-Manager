@@ -1,4 +1,0 @@
-﻿import {desc,like,or} from "drizzle-orm";
-import {getDb} from "../../../db";
-import {auditLogs} from "../../../db/schema";
-export async function GET(request:Request){try{const url=new URL(request.url),query=(url.searchParams.get("q")??"").trim(),db=getDb();const base=db.select().from(auditLogs);const rows=await (query?base.where(or(like(auditLogs.actorName,`%${query}%`),like(auditLogs.action,`%${query}%`),like(auditLogs.targetId,`%${query}%`))):base).orderBy(desc(auditLogs.occurredAt)).limit(200);return Response.json({auditLogs:rows});}catch(error){return Response.json({error:error instanceof Error?error.message:"감사로그 조회에 실패했습니다."},{status:500})}}
