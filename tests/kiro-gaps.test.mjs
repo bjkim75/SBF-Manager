@@ -12,3 +12,7 @@ test("TC-09 버전 발행·Draft·불변 스냅샷 UI를 제공한다",async()=>
 
 
 test("TC-10 notifications and edit lock are provided",async()=>{const [page,views]=await Promise.all([read("app/page.tsx"),read("app/extended-views.tsx")]);assert.match(page,/NotificationPanel/);assert.match(views,/안읽음 3/);assert.match(page,/29:42 후 자동 잠금 해제/);assert.match(views,/Jira 반영 관리/)});
+
+
+
+test("TC-16 system support menus have dedicated views",async()=>{const [page,views]=await Promise.all([read("app/page.tsx"),read("app/extended-views.tsx")]);assert.match(page,/view==='기준정보'\?<ReferenceDataView\/>/);assert.match(page,/view==='사용자·권한'\?<UserAccessView\/>/);assert.match(page,/view==='환경 설정'\?<SettingsView\/>/);assert.match(views,/title="기준정보"/);assert.match(views,/title="사용자·권한"/);assert.match(views,/title="환경 설정"/);assert.match(views,/코드 그룹/);assert.match(views,/역할별 권한/);assert.match(views,/버전 정책/)});
