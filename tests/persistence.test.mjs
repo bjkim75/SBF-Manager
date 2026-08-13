@@ -9,6 +9,6 @@ test("TC-12 변경요청 API는 복수 항목··낙관적 잠금을 적용한�
 
 test("TC-13 version API stores immutable metadata",async()=>{const route=await read('app/api/versions/route.ts');assert.match(route,/versionPattern/);assert.match(route,/reason\.length>500/);assert.match(route,/snapshotHash/);assert.match(route,/sourceSheet:"1\. IA"/);assert.doesNotMatch(route,/auditLogs|correlationId|action:"버전 발행"/)});
 
-test("TC-14 UI는 변경요청과 버전 발행 API를 호출한다",async()=>{const [page,views]=await Promise.all([read('app/page.tsx'),read('app/extended-views.tsx')]);assert.match(page,/fetch\('\/api\/change-requests'/);assert.match(page,/new FormData\(form\)/);assert.match(page,/data\.getAll\('changeType'\)/);assert.match(views,/fetch\('\/api\/versions'/);assert.match(views,/불변 스냅샷을 발행했습니다/)});
+test("TC-14 Netlify UI handles prototype persistence without backend APIs",async()=>{const [page,views]=await Promise.all([read('app/page.tsx'),read('app/extended-views.tsx')]);assert.doesNotMatch(page,/fetch\('\/api\/change-requests'/);assert.doesNotMatch(views,/fetch\('\/api\/versions'/);assert.match(page,/setWorkflowRequests/);assert.match(page,/new FormData\(form\)/);assert.match(page,/data\.getAll\('changeType'\)/);assert.match(page,/UI \\uAC80\\uC99D\\uC6A9/);assert.match(views,/Netlify \\uBC30\\uD3EC\\uBCF8/)});
 
 test("TC-15 audit log API file is removed",async()=>{const fs=await import('node:fs/promises');await assert.rejects(fs.access(new URL('app/api/audit-logs/route.ts',root)),/ENOENT/)});
