@@ -7,11 +7,13 @@
   },
   "scripts": {
     "dev": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext dev",
-    "build": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext build",
+    "build": "vite build --config vite.spa.config.ts",
     "start": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext start",
-    "test": "npm run build && node --test tests/rendered-html.test.mjs",
+    "test": "npm run build && node --test tests/rendered-html.test.mjs tests/kiro-gaps.test.mjs tests/persistence.test.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
-    "db:generate": "drizzle-kit generate"
+    "db:generate": "drizzle-kit generate",
+    "dev:spa": "vite --config vite.spa.config.ts",
+    "build:vinext": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext build"
   },
   "dependencies": {
     "drizzle-orm": "0.45.2",

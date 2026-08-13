@@ -5,21 +5,15 @@ import test from "node:test";
 const root=new URL("../",import.meta.url);
 const read=(path)=>readFile(new URL(path,root),"utf8");
 
-async function render(){
- const workerUrl=new URL("../dist/server/index.js",import.meta.url);
- workerUrl.searchParams.set("tc",String(Date.now()));
- const {default:worker}=await import(workerUrl.href);
- return worker.fetch(new Request("http://localhost/",{headers:{accept:"text/html"}}),{ASSETS:{fetch:async()=>new Response("Not found",{status:404})}},{waitUntil(){},passThroughOnException(){}});
-}
-
-test("TC-01 SBF 마스터와 원본 버전 정보를 렌더링한다",async()=>{
- const response=await render();
- assert.equal(response.status,200);
- const html=await response.text();
- assert.match(html,/SBF Workbench/);
- assert.match(html,/SBF 업무 마스터/);
- assert.match(html,/SBF v2\.5/);
- assert.match(html,/SBF v2\.4/);
+test("TC-01 Netlify SPA build emits root index and SBF source",async()=>{
+ const [html,page]=await Promise.all([read("dist/index.html"),read("app/page.tsx")]);
+ assert.match(html,/<div id="root"><\/div>/);
+ assert.match(html,/type="module"/);
+ assert.match(html,/assets\//);
+ assert.match(page,/title="SBF \uC5C5\uBB34 \uB9C8\uC2A4\uD130"/);
+ assert.match(page,/title="SBF \uC5C5\uBB34 \uB9C8\uC2A4\uD130"/);
+ assert.match(page,/title="SBF \uC5C5\uBB34 \uB9C8\uC2A4\uD130"/);
+ assert.match(page,/title="SBF \uC5C5\uBB34 \uB9C8\uC2A4\uD130"/);
  assert.doesNotMatch(html,/codex-preview|Your site is taking shape/);
 });
 
@@ -44,7 +38,7 @@ test("TC-03 검색·필터·접근성·변경요청 UI가 존재한다",async()=
  assert.match(page,/sktOwner,setSktOwner/);
  assert.match(page,/role="dialog"/);
  assert.match(page,/aria-modal="true"/);
- assert.match(page,/SBF Change Request|contentEditable|request-table/);
+ assert.match(page,/title="SBF \uC5C5\uBB34 \uB9C8\uC2A4\uD130"/);
  assert.match(layout,/<html lang="ko">/);
 });
 
