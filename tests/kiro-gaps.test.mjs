@@ -21,7 +21,7 @@ test("TC-16 removed support menus and dead views stay deleted",async()=>{const [
 test("TC-17 change request modal supports rich content table attachments and pasted images",async()=>{const page=await read("app/page.tsx");assert.match(page,/contentEditable/);assert.match(page,/onPaste=\{onPaste\}/);assert.match(page,/clipboardData\.items/);assert.match(page,/type="file" multiple/);assert.match(page,/request-table/);assert.match(page,/referenceUrl/);assert.match(page,/attachment-drop/)});
 
 
-test("TC-18 processing work supports status transitions",async()=>{const page=await read("app/page.tsx");assert.match(page,/function ProcessingWork/);assert.match(page,/updateRequestStatus/);assert.match(page,/rows={workflowRequests}/);assert.match(page,/\\uAC80\\uD1A0 \\uC911/);assert.match(page,/\\uBCF4\\uC644 \\uC694\\uCCAD/);assert.match(page,/\\uC2B9\\uC778/);assert.match(page,/\\uC791\\uC5C5 \\uC644\\uB8CC/);assert.match(page,/jiraSteps/);assert.match(page,/Jira \\uC0B0\\uCD9C\\uBB3C/)});
+test("TC-18 processing work supports status transitions",async()=>{const page=await read("app/page.tsx");assert.match(page,/function ProcessingWork/);assert.match(page,/updateRequestStatus/);assert.match(page,/rows={workflowRequests}/);assert.match(page,/\\uAC80\\uD1A0 \\uC911/);assert.match(page,/\\uBCF4\\uC644 \\uC694\\uCCAD/);assert.match(page,/\\uC2B9\\uC778/);assert.match(page,/\\uC791\\uC5C5 \\uC644\\uB8CC/);assert.match(page,/jiraSteps/);assert.match(page,/Jira \\uC0B0\\uCD9C\\uBB3C/);assert.ok(page.includes("SBF \\uBC18\\uC601 \\uC911"));assert.match(page,/sbf-apply-actions/)});
 
 
 
@@ -41,7 +41,7 @@ test("TC-22 processing supports list card filter sort",async()=>{const [page,css
 test("TC-23 processing list exposes sbf jira states",async()=>{const [page,css]=await Promise.all([read("app/page.tsx"),read("app/globals.css")]);assert.match(page,/sbfApplyStatus/);assert.match(page,/jiraApplyStatus/);assert.match(page,/sbf-apply/);assert.match(page,/jira-state/);assert.match(page,/jira-open/);assert.match(page,/setViewMode\('card'\)/);assert.match(page,/SBF \\uBC18\\uC601/);assert.match(page,/Jira \\uBC18\\uC601/);assert.match(page,/Jira \\uC0B0\\uCD9C\\uBB3C \\uAD00\\uB9AC/);assert.match(css,/\.sbf-apply/);assert.match(css,/\.jira-state/)});
 
 
-test("TC-24 requester sees sbf jira results and no question mark button",async()=>{const page=await read("app/page.tsx");assert.match(page,/sbfResult/);assert.match(page,/jiraResult/);assert.match(page,/SBF \\uBC18\\uC601\\uACB0\\uACFC/);assert.match(page,/Jira \\uBC18\\uC601\\uACB0\\uACFC/);assert.match(page,/SBF \\uBC18\\uC601 \\uC644\\uB8CC, Jira \\uBBF8\\uBC18\\uC601/);assert.doesNotMatch(page,/>\? \{'\\uC0C8 \\uBCC0\\uACBD\\uC694\\uCCAD'\}/);assert.doesNotMatch(page,/<button>\? \{'\\uD544\\uD130'\}<\/button>/)});
+test("TC-24 requester sees sbf jira results and no question mark button",async()=>{const page=await read("app/page.tsx");assert.match(page,/sbfResult/);assert.match(page,/jiraResult/);assert.match(page,/SBF \\uBC18\\uC601\\uACB0\\uACFC/);assert.match(page,/Jira \\uBC18\\uC601\\uACB0\\uACFC/);assert.ok(page.includes("\\uBC18\\uC601 \\uB300\\uAE30"));assert.ok(page.includes("SBF \\uBC18\\uC601 \\uC644\\uB8CC - Jira"));assert.doesNotMatch(page,/>\? \{'\\uC0C8 \\uBCC0\\uACBD\\uC694\\uCCAD'\}/);assert.doesNotMatch(page,/<button>\? \{'\\uD544\\uD130'\}<\/button>/)});
 
 
 test("TC-25 import view is trusted sbf loading",async()=>{const [page,css]=await Promise.all([read("app/page.tsx"),read("app/globals.css")]);const block=page.match(/function ImportView[\s\S]*?function RequestModal/)?.[0]??"";assert.match(block,/title=\{'\\u0053\\u0042\\u0046/);assert.match(block,/sbf-import-grid/);assert.match(block,/import-file-button/);assert.doesNotMatch(block,/<span>\?<\/span>/);assert.doesNotMatch(block,/className="panel rules"/);assert.doesNotMatch(block,/className="error"/);assert.match(block,/Badge text=\{'\\uC801\\uC7AC \\uC644\\uB8CC'\}/);assert.match(css,/\.import-file-button/);assert.match(css,/margin-top:18px/)});
@@ -54,3 +54,9 @@ test("TC-27 deployment pending count is wired",async()=>{const [page,views]=awai
 
 
 test("TC-28 processing badge and received count",async()=>{const [page,data]=await Promise.all([read("app/page.tsx"),read("app/data.ts")]);assert.ok(page.includes("<em>{workflowRequests.length}</em>"));assert.ok(!page.includes("<em>7</em>"));assert.ok(data.includes("\\uC694\\uCCAD \\uC811\\uC218","2026-08-07"));assert.ok(!data.includes("\\uC791\\uC5C5 \\uC911","2026-08-07"))});
+
+
+
+test("TC-29 SBF apply work is linked from processing",async()=>{const [page,data,views]=await Promise.all([read("app/page.tsx"),read("app/data.ts"),read("app/extended-views.tsx")]);assert.ok(data.includes("SBF \\uBC18\\uC601 \\uC791\\uC5C5"));assert.ok(page.includes("openApply"));assert.ok(page.includes("setApplyRequestId"));assert.ok(page.includes("<ChangeCompare request="));assert.match(views,/title=\"SBF 반영 작업\"/);assert.match(views,/SBF APPLY WORK/);});
+
+test("TC-30 SBF apply values are editable and returns to processing",async()=>{const [page,views]=await Promise.all([read("app/page.tsx"),read("app/extended-views.tsx")]);assert.doesNotMatch(views,/반영 메모/);assert.match(views,/SBF 수정 업무ID/);assert.match(views,/onChange=\{e=>edit\('businessId'/);assert.match(views,/변경 후 · SBF 수정값/);assert.ok(page.includes("setView('\\uCC98\\uB9AC \\uC5C5\\uBB34')"));});
