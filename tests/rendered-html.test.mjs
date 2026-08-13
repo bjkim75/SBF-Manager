@@ -23,36 +23,43 @@ test("TC-01 SBF 마스터와 원본 버전 정보를 렌더링한다",async()=>{
  assert.doesNotMatch(html,/codex-preview|Your site is taking shape/);
 });
 
-test("TC-02 버전 선택 CSV 다운로드 계약을 제공한다",async()=>{
+test("TC-02 CSV export uses IA headers and raw Excel rows",async()=>{
  const page=await read("app/page.tsx");
- assert.match(page,/aria-label="다운로드할 SBF 버전"/);
+ assert.match(page,/version-select/);
  assert.match(page,/<option value="v2\.5">/);
  assert.match(page,/<option value="v2\.4">/);
- assert.match(page,/headers=\['SBF 버전','업무ID','SUB ID'/);
+ assert.match(page,/iaHeaders/);
+ assert.match(page,/\.\.\.x\.raw/);
  assert.match(page,/new Blob\(\['\\uFEFF'/);
  assert.match(page,/text\/csv;charset=utf-8/);
- assert.match(page,/link\.download=`SBF_\$\{requestedVersion\}_/);
- assert.match(page,/replaceAll\('"','""'\)/);
  assert.match(page,/exportItems\.map/);
 });
 
 test("TC-03 검색·필터·접근성·변경요청 UI가 존재한다",async()=>{
  const [page,layout]=await Promise.all([read("app/page.tsx"),read("app/layout.tsx")]);
- assert.match(page,/aria-label="SBF 통합 검색"/);
- assert.match(page,/aria-label="도메인 필터"/);
- assert.match(page,/aria-label="1Depth 필터"/);
+ assert.match(page,/aria-label="SBF \\uD1B5\\uD569 \\uAC80\\uC0C9"/);
+ assert.match(page,/aria-label=\{'\\uB3C4\\uBA54\\uC778 \\uD544\\uD130'\}/);
+ assert.doesNotMatch(page,/aria-label="1Depth \\uD544\\uD130"/);
+ assert.match(page,/squad,setSquad/);
+ assert.match(page,/sktOwner,setSktOwner/);
  assert.match(page,/role="dialog"/);
  assert.match(page,/aria-modal="true"/);
- assert.match(page,/새 변경요청/);
+ assert.match(page,/SBF Change Request|contentEditable|request-table/);
  assert.match(layout,/<html lang="ko">/);
 });
 
-test("TC-04 분석된 1. IA 샘플은 복합키와 필수 계층을 가진다",async()=>{
+test("TC-04 IA full data is loaded from Excel A to AX",async()=>{
  const data=await read("app/data.ts");
- const keys=[...data.matchAll(/id:'([^']+)',sub:(\d+)/g)].map(m=>m[1]+"-"+m[2]);
- assert.ok(keys.length>=8);
- assert.equal(new Set(keys).size,keys.length);
- assert.match(data,/d1:'1\.탐색'/);
- assert.match(data,/d1:'2\.회원·계정'/);
- assert.match(data,/l3:'Product Offering 검색'/);
+ const keys=[...data.matchAll(/"id":"([^\"]+)","sub":(\d+)/g)].map(m=>m[1]+"-"+m[2]);
+ assert.ok(keys.length>=1172);
+ assert.ok(new Set(keys).size>=1171);
+ assert.match(data,/export const iaHeaders:string\[\]=/);
+ assert.match(data,/"raw":\[/);
+ assert.match(data,/"1Depth \(old\)"/);
+ assert.match(data,/"d1":"1\.\\ud0d0\\uc0c9"/);
+ assert.match(data,/"d1":"2\.\\ud68c/);
+ assert.match(data,/"sktOwner":/);
+ assert.match(data,/"axOwner":/);
 });
+
+test("TC-05 SBF master description uses decoded korean",async()=>{const page=await read("app/page.tsx");assert.match(page,/desc=\{'Business Framework\\uC758/);assert.doesNotMatch(page,/desc="Business Framework\\uC758/);assert.doesNotMatch(page,/Business Framework\? \?\?\?/)});

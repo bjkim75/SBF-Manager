@@ -1,0 +1,12 @@
+[build]
+  command = "npm run build"
+  publish = "dist/client"
+
+[build.environment]
+  NODE_VERSION = "22.13.0"
+  WRANGLER_LOG_PATH = ".wrangler/wrangler.log"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
