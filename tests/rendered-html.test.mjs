@@ -19,9 +19,9 @@ test("TC-01 Netlify SPA build emits root index and SBF source",async()=>{
 
 test("TC-02 CSV export uses IA headers and raw Excel rows",async()=>{
  const page=await read("app/page.tsx");
- assert.match(page,/version-select/);
- assert.match(page,/<option value="v2\.5">/);
- assert.match(page,/<option value="v2\.4">/);
+ assert.doesNotMatch(page,/version-select/);
+ assert.doesNotMatch(page,/aria-label="다운로드할 SBF 버전"/);
+ assert.match(page,/version-chip/);
  assert.match(page,/iaHeaders/);
  assert.match(page,/\.\.\.x\.raw/);
  assert.match(page,/new Blob\(\['\\uFEFF'/);
