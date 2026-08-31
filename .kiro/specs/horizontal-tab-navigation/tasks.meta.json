@@ -1,0 +1,434 @@
+{
+  "pbtResults": {
+    "2.3 computeVisibleGroups 속성 테스트 — 역할 노출 정합성": {
+      "status": "passed",
+      "lastRunTimestamp": 1788145241087
+    },
+    "2.4 computeVisibleGroups 속성 테스트 — 'SBF 반영 작업' 상시 제외": {
+      "status": "passed",
+      "lastRunTimestamp": 1788145340439
+    },
+    "3.3 Group_Divider 속성 테스트 — 구분자 개수": {
+      "status": "passed",
+      "lastRunTimestamp": 1788145454403
+    },
+    "4.5 Active_Tab 판정 속성 테스트 — 유일성": {
+      "status": "passed",
+      "lastRunTimestamp": 1788145469107
+    },
+    "4.2 resolveViewForTab 속성 테스트 — 매핑 등가성": {
+      "status": "passed",
+      "lastRunTimestamp": 1788145473955
+    },
+    "4.7 재선택 함수 속성 테스트 — 재선택 후 정합성": {
+      "status": "passed",
+      "lastRunTimestamp": 1788145562929
+    }
+  },
+  "executionHistory": {
+    "1. 데이터 모델과 노출 규칙, 테스트 환경 준비": [
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788144000999
+      },
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788144012134
+      },
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788144381305
+      }
+    ],
+    "2.1 computeVisibleGroups 순수 함수 구현": [
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788144001087
+      },
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788144386550
+      },
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788144505787
+      }
+    ],
+    "3.1 Group_Divider 삽입 계산 및 렌더 순서 산출 함수 구현": [
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788144001148
+      },
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788144514262
+      },
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788145054436
+      }
+    ],
+    "4.1 resolveViewForTab 순수 함수 구현": [
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788144001202
+      },
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788144387667
+      },
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788144507005
+      }
+    ],
+    "4.4 Active_Tab 판정 함수 구현": [
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788144001249
+      },
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788144388605
+      },
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788144507985
+      }
+    ],
+    "4.6 역할 변경 후 Active_Tab 재선택 함수 구현": [
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788144001304
+      },
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788144515227
+      },
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788145055432
+      }
+    ],
+    "5. 체크포인트 — 계산 계층 테스트 통과 확인": [
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788144001356
+      },
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788145615178
+      },
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788146589131
+      }
+    ],
+    "6.1 Top_Tab_Bar 컴포넌트 구현": [
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788144001417
+      },
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788145614102
+      },
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788146588242
+      }
+    ],
+    "6.2 상단 고정 및 단일 행 + 가로 스크롤 스타일 적용": [
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788144001485
+      },
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788150347464
+      }
+    ],
+    "7.1 app/page.tsx의 세로 사이드바 제거 및 Top_Tab_Bar 연결": [
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788144001541
+      },
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788150348798
+      }
+    ],
+    "7.2 'SBF 반영 작업' 진입/복귀 경로 유지 확인 및 배선": [
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788144001594
+      },
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788150355016
+      },
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788150468090
+      }
+    ],
+    "9. 최종 체크포인트 — 전체 테스트 통과 확인": [
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788144001647
+      },
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788151624060
+      },
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788155344465
+      }
+    ],
+    "2. 탭 노출 계산 (computeVisibleGroups)": [
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788144505845
+      }
+    ],
+    "3. Group_Divider 삽입 계산과 그룹 인접 배치": [
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788145054487
+      }
+    ],
+    "4. Tab → View 매핑과 재선택 함수": [
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788145055486
+      }
+    ],
+    "2.2 computeVisibleGroups 속성 테스트 — 순서 보존": [
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788145116672
+      },
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788145366382
+      }
+    ],
+    "2.3 computeVisibleGroups 속성 테스트 — 역할 노출 정합성": [
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788145118123
+      },
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788145367764
+      }
+    ],
+    "2.4 computeVisibleGroups 속성 테스트 — 'SBF 반영 작업' 상시 제외": [
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788145119649
+      },
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788145369029
+      }
+    ],
+    "2.5 computeVisibleGroups 예시/엣지 테스트": [
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788145120930
+      },
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788145370414
+      }
+    ],
+    "3.2 Group_Divider 속성 테스트 — 인접 연속 배치": [
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788145122067
+      },
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788145371416
+      }
+    ],
+    "3.3 Group_Divider 속성 테스트 — 구분자 개수": [
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788145377712
+      },
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788145592223
+      }
+    ],
+    "4.2 resolveViewForTab 속성 테스트 — 매핑 등가성": [
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788145379127
+      },
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788145588205
+      }
+    ],
+    "4.3 resolveViewForTab 속성 테스트 — 재선택 멱등성": [
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788145380246
+      },
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788145590826
+      }
+    ],
+    "4.5 Active_Tab 판정 속성 테스트 — 유일성": [
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788145381648
+      },
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788145593201
+      }
+    ],
+    "4.7 재선택 함수 속성 테스트 — 재선택 후 정합성": [
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788145382643
+      },
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788145589572
+      }
+    ],
+    "6. Top_Tab_Bar 표현 계층 구현": [
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788150347523
+      }
+    ],
+    "7. 기존 화면 배선 (사이드바 → Top_Tab_Bar 치환)": [
+      {
+        "executionId": "b0c27ad3-8240-4ac4-a73b-926ee1ea8974",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788150468148
+      }
+    ],
+    "8.1 Top_Tab_Bar 렌더링 및 사이드바 부재 통합 테스트": [
+      {
+        "executionId": "71b9a50b-3252-41a7-9d15-7fe7af8b53bc",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788160429313
+      },
+      {
+        "executionId": "71b9a50b-3252-41a7-9d15-7fe7af8b53bc",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788161484121
+      }
+    ],
+    "8. 통합/렌더 테스트": [
+      {
+        "executionId": "71b9a50b-3252-41a7-9d15-7fe7af8b53bc",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788161484219
+      }
+    ],
+    "8.2 가로 오버플로우 통합 테스트": [
+      {
+        "executionId": "71b9a50b-3252-41a7-9d15-7fe7af8b53bc",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788161485459
+      },
+      {
+        "executionId": "71b9a50b-3252-41a7-9d15-7fe7af8b53bc",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788161713876
+      }
+    ],
+    "8.3 Active_Tab 스타일 통합 테스트": [
+      {
+        "executionId": "71b9a50b-3252-41a7-9d15-7fe7af8b53bc",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788161487753
+      },
+      {
+        "executionId": "71b9a50b-3252-41a7-9d15-7fe7af8b53bc",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788161711420
+      }
+    ],
+    "8.4 'SBF 반영 작업' 진입/복귀 통합 테스트": [
+      {
+        "executionId": "71b9a50b-3252-41a7-9d15-7fe7af8b53bc",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788161488113
+      },
+      {
+        "executionId": "71b9a50b-3252-41a7-9d15-7fe7af8b53bc",
+        "chatSessionId": "sess_f13487d5-96d0-4ca4-b585-749e5c9682ac",
+        "timestamp": 1788161712774
+      }
+    ]
+  }
+}
