@@ -42,3 +42,8 @@ yarn-error.log*
 # local preview logs
 /dev.log
 /dev-error.log
+
+# SBF 원본 Excel (데이터는 public/sbf-master.json으로 반영)
+*.xlsx
+# Office 임시 잠금 파일
+~$*

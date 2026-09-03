@@ -6,7 +6,7 @@ const read=p=>readFile(new URL(p,root),"utf8");
 
 test("TC-07 Kiro gap screens remain wired",async()=>{const [page,data,views]=await Promise.all([read("app/page.tsx"),read("app/data.ts"),read("app/extended-views.tsx")]);assert.doesNotMatch(page,/IA\\u2013L3|IA?L3/);for(const marker of [/ChangeCompare/,/HistoryView/,/VersionView/]){assert.match(page,marker)}assert.doesNotMatch(page,/JiraView/);assert.doesNotMatch(data,/Jira \uBC18\uC601 \uAD00\uB9AC/);assert.doesNotMatch(page,/HierarchyView/);assert.match(views,/export function VersionView/);assert.doesNotMatch(page,/AuditView/);assert.doesNotMatch(views,/export function AuditView/)});
 
-test("TC-08 full-field change request and IA master table are provided",async()=>{const [page,views]=await Promise.all([read("app/page.tsx"),read("app/extended-views.tsx")]);assert.match(views,/setExpanded/);assert.doesNotMatch(page,/className="segments"/);assert.doesNotMatch(page,/column-picker/);assert.match(page,/sktOwner/);assert.match(page,/axOwner/);assert.doesNotMatch(page,/function Mapping/);assert.match(page,/requestFieldIndexes/);assert.match(page,/full-request-table/);assert.match(page,/requestArea/)});
+test("TC-08 full-field change request and IA master table are provided",async()=>{const [page,views,data]=await Promise.all([read("app/page.tsx"),read("app/extended-views.tsx"),read("app/data.ts")]);assert.match(views,/setExpanded/);assert.doesNotMatch(page,/className="segments"/);assert.doesNotMatch(page,/column-picker/);assert.match(page,/sktOwner/);assert.match(data,/axOwner/);assert.doesNotMatch(page,/function Mapping/);assert.match(page,/requestFieldIndexes/);assert.match(page,/full-request-table/);assert.match(page,/requestArea/)});
 
 test("TC-09 deployment draft immutable snapshot UI",async()=>{const views=await read("app/extended-views.tsx");assert.ok(views.includes("pendingCount"));assert.ok(views.includes("calculateNextVersion"));assert.ok(views.includes("nextVersion"));assert.ok(views.includes("snapshot")||views.includes("\uC2A4\uB0C5\uC0F7"));assert.ok(views.includes("download(x.version)"));assert.ok(!views.includes("??? ???? 27?"))});
 
@@ -44,13 +44,17 @@ test("TC-23 processing list exposes sbf jira states",async()=>{const [page,css]=
 test("TC-24 requester sees sbf jira results and no question mark button",async()=>{const page=await read("app/page.tsx");assert.match(page,/sbfResult/);assert.match(page,/jiraResult/);assert.match(page,/SBF \\uBC18\\uC601\\uACB0\\uACFC/);assert.match(page,/Jira \\uBC18\\uC601\\uACB0\\uACFC/);assert.ok(page.includes("\\uBC18\\uC601 \\uB300\\uAE30"));assert.ok(page.includes("SBF \\uBC18\\uC601 \\uC644\\uB8CC - Jira"));assert.doesNotMatch(page,/>\? \{'\\uC0C8 \\uBCC0\\uACBD\\uC694\\uCCAD'\}/);assert.doesNotMatch(page,/<button>\? \{'\\uD544\\uD130'\}<\/button>/)});
 
 
-test("TC-25 import view is trusted sbf loading",async()=>{const [page,css]=await Promise.all([read("app/page.tsx"),read("app/globals.css")]);const block=page.match(/function ImportView[\s\S]*?function RequestModal/)?.[0]??"";assert.match(block,/title=\{'\\u0053\\u0042\\u0046/);assert.match(block,/sbf-import-grid/);assert.match(block,/import-file-button/);assert.doesNotMatch(block,/<span>\?<\/span>/);assert.doesNotMatch(block,/className="panel rules"/);assert.doesNotMatch(block,/className="error"/);assert.match(block,/Badge text=\{'\\uC801\\uC7AC \\uC644\\uB8CC'\}/);assert.match(css,/\.import-file-button/);assert.match(css,/margin-top:18px/)});
+test("TC-25 import view is trusted sbf loading",async()=>{const [page,css]=await Promise.all([read("app/page.tsx"),read("app/globals.css")]);const block=page.match(/function ImportView[\s\S]*?function RequestModal/)?.[0]??"";assert.match(block,/title=\{'\\u0053\\u0042\\u0046/);assert.match(block,/sbf-import-grid/);assert.match(block,/import-file-button/);assert.doesNotMatch(block,/<span>\?<\/span>/);assert.doesNotMatch(block,/className="panel rules"/);
+ // Task 56: real .xlsx file input + client parse replacing the mockup toast button.
+ assert.match(block,/type="file"/);assert.match(block,/accept="\.xlsx"/);assert.match(block,/parseSbfWorkbook/);assert.match(block,/onImport/);
+ // Success/failure attempts append to a session-scoped 최근 가져오기 목록 rather than the hardcoded 적재 완료 rows.
+ assert.match(block,/Badge text=\{h\.ok\?/);assert.match(css,/\.import-file-button/);assert.match(css,/margin-top:18px/)});
 
 
 test("TC-26 history has no csv download",async()=>{const views=await read("app/extended-views.tsx");const block=views.match(/export function HistoryView[\s\S]*?export function VersionView/)?.[0]??"";assert.doesNotMatch(block,/CSV/)});
 
 
-test("TC-27 deployment pending count is wired",async()=>{const [page,views]=await Promise.all([read("app/page.tsx"),read("app/extended-views.tsx")]);assert.ok(page.includes("pendingPublishCount"));assert.ok(page.includes("!publishedRequestIds.includes"));assert.ok(views.includes("pendingCount:number"));assert.ok(views.includes("pendingCount"));assert.ok(views.includes("disabled={pendingCount===0}"));assert.doesNotMatch(views,/\{'\+ 새 배포'\}/);assert.ok(views.includes("pendingCount"));assert.ok(!views.includes("27?"));assert.ok(!views.includes("? ? ?? ??"))});
+test("TC-27 deployment pending count is wired",async()=>{const [page,views]=await Promise.all([read("app/page.tsx"),read("app/extended-views.tsx")]);assert.ok(page.includes("pendingPublishCount"));assert.ok(page.includes("!publishedRequestIds.includes"));assert.ok(views.includes("pendingCount:number"));assert.ok(views.includes("pendingCount"));assert.ok(views.includes("publishable"));assert.ok(views.includes("canPublish||pendingCount>0"));assert.doesNotMatch(views,/\{'\+ 새 배포'\}/);assert.ok(views.includes("pendingCount"));assert.ok(!views.includes("27?"));assert.ok(!views.includes("? ? ?? ??"))});
 
 
 test("TC-28 processing badge and received count",async()=>{const [page,data]=await Promise.all([read("app/page.tsx"),read("app/data.ts")]);assert.ok(page.includes("<em>{workflowRequests.length}</em>"));assert.ok(!page.includes("<em>7</em>"));assert.ok(data.includes("\\uC694\\uCCAD \\uC811\\uC218","2026-08-07"));assert.ok(!data.includes("\\uC791\\uC5C5 \\uC911","2026-08-07"))});
@@ -121,8 +125,13 @@ test("TC-60 apply work back button and dynamic next deployment version are imple
   assert.match(tasks,/SBF 반영 작업 돌아가기/);
   assert.match(views,/calculateNextVersion/);
   assert.match(views,/minor>=9\?/);
-  assert.match(views,/nextVersion\} \{'배포 준비'\}/);
-  assert.match(views,/name="versionNo" value=\{nextVersion\} readOnly/);
+  // FIX 3: banner button now uses a neutral label; version is chosen in the dialog (suggestedVersion still seeds the input).
+  assert.match(views,/\{'새 배포 준비'\}/);
+  assert.doesNotMatch(views,/suggestedVersion\} \{'배포 준비'\}/);
+  assert.match(views,/setVersionInput\(suggestedVersion\)/);
+  // Task 58 (VPUB-02): version input is now editable (controlled), not readOnly.
+  assert.match(views,/name="versionNo" value=\{versionInput\}/);
+  assert.doesNotMatch(views,/name="versionNo" value=\{nextVersion\} readOnly/);
   assert.doesNotMatch(views,/>v2\.6 \{'배포 준비'\}/);
   assert.match(views,/onBack\?:\(\)=>void/);
   assert.match(views,/돌아가기/);
@@ -144,8 +153,9 @@ test("TC-61 SBF apply completion stores working copy and deployment promotes off
   assert.match(page,/const version=activeOfficialVersion/);
   assert.match(page,/masterRows=\{workingRows\}/);
   assert.match(page,/SBF 반영 완료 - 작업본\/template에 저장되었습니다/);
-  assert.match(views,/onPublish:\(reason:string\)=>void/);
-  assert.match(views,/작업본\/template 전체 데이터를/);
+  // Task 58 (VPUB): onPublish now takes both version and reason; publish source is the active official version rows.
+  assert.match(views,/onPublish:\(version:string,reason:string\)=>void/);
+  assert.match(views,/현재 활성 공식 버전 데이터를/);
   assert.match(views,/공식 SBF 버전을 배포했습니다/);
 });
 
@@ -153,7 +163,10 @@ test("TC-61 SBF apply completion stores working copy and deployment promotes off
 
 test("TC-62 v2.4 master seed is generated from the local Excel snapshot",async()=>{const data=await read("app/data.ts");const block=data.match(/export const itemsV24:Item\[\]=([\s\S]*?)\nexport const versionStats/)?.[1]??"";assert.ok(block.length>1000);assert.doesNotMatch(block,/items\.map/);assert.match(block,/"id":"B1002","sub":1/);assert.match(block,/"id":"BC190","sub":2/);assert.match(data,/'v2\.4':\{count:1180,monthlyChanges:0,monthlyNote:'2026-07-18 배포 기준'\}/);});
 
-test("TC-63 import history shows the actual v2.4 Excel row count",async()=>{const page=await read("app/page.tsx");assert.match(page,/SKT_Business_Framework_v2\.4\.xlsx[\s\S]*<td>1,180<\/td><td>1,180<\/td>/);});
+test("TC-63 import history is session-driven, not hardcoded",async()=>{const page=await read("app/page.tsx");
+ // Task 56 replaces the hardcoded v2.4/v2.5 history rows with a session state array.
+ assert.doesNotMatch(page,/SKT_Business_Framework_v2\.4\.xlsx[\s\S]*<td>1,180<\/td><td>1,180<\/td>/);
+ assert.match(page,/setHistory/);assert.match(page,/history\.map/);});
 
 
 

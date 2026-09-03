@@ -532,3 +532,47 @@
   - [x] 제출 시 기존 요청 업데이트 + 상태 전환 + 이력 기록
   - [x] REVIEW DETAIL에 재요청 사유 표시
 - **테스트**: 보완 요청 상태 → 수정작업 진행 → 수정 후 재요청 → 처리 이력 확인 TC
+
+### 56. MVP 클라이언트 Excel 가져오기 구현
+- **요구사항**: IMP-C01, IMP-C02, IMP-C03, IMP-C04, IMP-C05, IMP-C06, IMP-C07, IMP-C08, IMP-C09, IMP-C10, IMP-C11, IMP-C12, IMP-C13, IMP-C14
+- **범위**: ImportView 실제화(파일 입력·파싱·요약·최근 작업), 클라이언트 xlsx 파서 유틸, 세션 활성버전 마스터 rows 교체 배선
+- **설계 참조**: design.md 45절
+- **작업**:
+  1. `xlsx`(SheetJS)를 package.json dependencies에 추가한다. (IMP-C04)
+  2. `app/import-xlsx.ts`에 `parseSbfWorkbook(file)` 유틸을 구현한다. 확장자·10MB·손상·시트명 `1. IA`·헤더·데이터0건 유효성을 순서대로 검사하고 오류코드를 구분해 반환한다. (IMP-C01, C02, C03, C11)
+  3. 헤더 매핑: `iaHeaders` 헤더명 기준으로 열을 매핑하고, 중복 헤더명은 출현 순서대로 순차 매핑한다. (IMP-C07)
+  4. 행 정규화: 업무ID 대문자+trim, SUB ID 정수(기본 1)로 변환하고 `itemFromRaw` 계약으로 `Item[]`을 생성한다. (IMP-C08, C13)
+  5. ImportView 목업 제거: 고정 toast 버튼을 실제 `input[type=file][accept=".xlsx"]`로 교체하고 취소 시 무변경을 보장한다. (IMP-C01)
+  6. 성공 시 파일명·시트명·행 수 요약을 표시하고, `onImport` 콜백으로 활성 공식 버전 rows를 전량 교체한다. (IMP-C05, C09)
+  7. 최근 가져오기 작업 표를 세션 state로 전환하고 성공/실패 시도를 행으로 추가한다. (IMP-C10)
+  8. 실패 시 원인별 오류 메시지 표시 + 세션 마스터/화면 조회 데이터 원상 보존을 보장한다. (IMP-C11, C12)
+  9. 새로고침 시 seed(`items`) 복원이 유지되는지 확인한다(별도 영속화 없음). (IMP-C06)
+- **완료 조건**: `1. IA` 시트가 있는 .xlsx 업로드 시 SBF 마스터/필터/상세/CSV가 파싱 데이터로 즉시 갱신되고, 유효성 실패 시 마스터가 보존되며, 새로고침 시 seed로 복원된다. `npm run build`와 `npm run test:render`(18/18)가 통과한다.
+- **테스트**: parseSbfWorkbook 유효성/헤더매핑/정규화 유닛 TC, 세션 마스터 교체 후 조회 반영 TC, 취소·실패 시 무변경 TC
+
+### 57. 파일 기반 영속 SBF 마스터 구현
+- **요구사항**: PER-01, PER-02, PER-03, PER-04, PER-05, PER-06, PER-07, PER-08, PER-09
+- **범위**: 발행 시 sbf-master.json 스냅샷 생성·다운로드, 앱 시작 시 public/sbf-master.json 로딩, 파일 없음/실패 시 오류 상태 + 담당자 조치 안내 + 재시도, 배포 반영 규칙 문서화
+- **설계 참조**: design.md 46절
+- **작업**:
+  1. 스냅샷 스키마 정의: schemaVersion, meta(versionNo/publishedAt/publisher/reason/itemCount/sourceFile/sourceSheet), iaHeaders, items(Item[]). 직렬화/역직렬화 유틸을 공유 모듈에 둔다. (PER-03)
+  2. 발행 배선: VersionView 발행(publishVersion/onPublish) 시 활성 버전(officialVersions[0]) rows + iaHeaders + 폼 메타로 스냅샷 JSON을 만들어 sbf-master.json(고정 파일명)으로 자동 다운로드한다. (PER-01, PER-02)
+  3. 로더 구현: 앱 시작 시 fetch('/sbf-master.json') → 파싱·스키마 검증 → SBF 마스터 기본 데이터로 사용. 로딩 상태 머신(loading/ready/error). seed 조용한 폴백 없음. (PER-04, PER-05)
+  4. 오류 UI: 파일없음/조회실패/파싱실패/스키마실패를 원인별로 구분 표기 + 조치 안내(발행 후 public/sbf-master.json 배치·커밋·재배포) + 재시도 버튼. (PER-06)
+  5. IMP-C 관계 유지: 가져오기는 발행 전 세션 미리보기로 유지, 영속 반영은 발행·배치·배포 흐름으로만. (PER-08)
+  6. 배포 규칙 문서화: 다운로드 파일을 public/sbf-master.json에 배치·커밋 → Netlify 재배포로 전 기기 반영. README/docs에 절차 명문화. 완전 자동 커밋은 범위 외. (PER-07, PER-09)
+- **완료 조건**: 발행 시 sbf-master.json이 자동 다운로드되고, public/sbf-master.json 배치·재배포 후 모든 기기에서 동일 값이 보이며 다음 접속에도 유지된다. 파일이 없거나 형식 오류면 seed 폴백 없이 오류 상태 + 조치 안내 + 재시도가 표시된다. npm run build와 npm run test:render(18/18)가 통과한다.
+- **테스트**: 스냅샷 직렬화/역직렬화 라운드트립 TC, 로더 상태 머신(성공/404/파싱실패/스키마실패) TC, 로딩 성공 시 SBF 마스터/필터/상세/CSV 반영 렌더 TC
+### 58. 발행 버전 통제 및 가져오기 연동 배포
+- **요구사항**: VPUB-01, VPUB-02, VPUB-03, VPUB-04, VPUB-05, VPUB-06, VPUB-07
+- **범위**: 발행 데이터 소스 정정(활성 버전 rows), 발행 다이얼로그 버전 직접 입력 + 유추 기본값, 버전 검증, 발행 버튼 활성화 조건 확대, 메타 versionNo 기록
+- **설계 참조**: design.md 47절
+- **작업**:
+  1. publishOfficialVersion 스냅샷 소스를 cloneRows(workingRows)에서 활성 공식 버전 rows(currentOfficialRows)로 변경한다. (VPUB-01)
+  2. ImportView에서 버전 입력을 받아(또는 파일명 유추) 세션 버전 힌트 state로 전달한다. (VPUB-03)
+  3. VersionView 발행 다이얼로그의 버전 번호 필드를 편집 가능 입력으로 변경하고, 기본값을 버전 힌트 → calculateNextVersion 순으로 채운다. (VPUB-02, VPUB-03)
+  4. 발행 제출 시 입력 버전을 사용해 officialVersions[0].version과 sbf-master.json meta.versionNo에 기록한다. 3단 버전 문자열 허용. (VPUB-04, VPUB-07)
+  5. 버전 검증: 빈 값/중복 버전이면 발행 중단 + 오류 안내. (VPUB-05)
+  6. 가져오기 세션 플래그(importedThisSession)를 두고 발행 버튼 disabled 조건을 (pendingCount===0 && !importedThisSession)로 완화한다. draft-banner 문구 보정. (VPUB-06)
+- **완료 조건**: 가져오기 후 발행 버튼이 활성화되고, 발행 다이얼로그에서 버전(예: 2.7.1)을 직접 입력·수정할 수 있으며, 발행 시 가져온 데이터가 그 버전으로 sbf-master.json에 기록·다운로드된다. 빈/중복 버전은 차단된다. npm run build와 npm run test:render(18/18)가 통과한다.
+- **테스트**: 발행 스냅샷이 활성 버전 rows를 쓰는지 TC, 버전 입력값이 meta.versionNo에 반영되는지 TC, 빈/중복 버전 차단 TC, 가져오기 후 발행 버튼 활성화 TC

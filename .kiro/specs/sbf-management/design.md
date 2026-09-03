@@ -388,3 +388,97 @@ eviewDraft.reviewAfterRaw를 사용한다.
 - SBF 반영 작업은 사이드바 메뉴에서 표시하지 않는다.
 - 처리 업무의 "SBF 반영 작업" 버튼을 통해서만 진입한다.
 - view state와 ChangeCompare 컴포넌트 기능은 그대로 유지한다.
+
+### 45. MVP 클라이언트 Excel 가져오기 (옵션 A)
+
+요구사항 그룹 IMP-C01~C14를 구현하기 위한 설계다. 데이터 가져오기 메뉴(`ImportView`)의 기존 목업(고정 toast 버튼, 하드코딩 최근 가져오기 작업 표)을 실제 파일 입력·클라이언트 파싱·세션 반영으로 대체한다. 서버/DB는 사용하지 않으며 모든 처리는 브라우저 내에서 수행하고 결과는 현재 세션에만 유지한다.
+
+#### 45.1 파서 유틸 (`app/import-xlsx.ts`)
+- SheetJS(`xlsx`)를 dependencies로 추가하고 클라이언트에서 `File`을 `ArrayBuffer`로 읽어 파싱한다. (IMP-C04)
+- `parseSbfWorkbook(file: File): Promise<ImportResult>` 형태의 순수 유틸을 제공한다. `ImportResult`는 성공 시 `{ok:true; fileName; sheetName; rowCount; items:Item[]}`, 실패 시 `{ok:false; fileName; sheetName?; rowCount?; errorCode; message}`로 구성한다.
+- 유효성 순서: (1) 확장자 `.xlsx` 아님 → `EXT`, (2) 파일 크기 10MB 초과 → `SIZE`(파싱 전 차단), (3) 파싱 실패/손상 → `CORRUPT`, (4) 시트명 정확히 `1. IA` 없음 → `NO_SHEET`, (5) 헤더 행 없음 → `NO_HEADER`, (6) 데이터 행 0건 → `NO_DATA`. (IMP-C01, C02, C03, C11)
+- 시트 선택은 이름이 정확히 `1. IA`(대소문자·공백·마침표 일치)인 시트 1개만 대상으로 하고 나머지는 무시한다. (IMP-C02)
+
+#### 45.2 헤더 매핑과 행 정규화
+- 첫 행을 헤더로 보고 `iaHeaders`의 헤더명과 일치하는 열을 매핑한다. 동일 헤더명이 2회 이상 출현하면 출현 순서대로 `iaHeaders`의 같은 이름 위치에 순차 매핑한다. (IMP-C07)
+- 각 데이터 행은 `iaHeaders` 길이에 맞춘 `raw:string[]`로 변환한다. 매핑되지 않은 `iaHeaders` 위치는 빈 문자열로 채운다.
+- 정규화: 업무ID(`raw[1]`)는 영문 대문자 변환 + 앞뒤 공백 제거, SUB ID(`raw[2]`)는 정수 변환하되 비어있거나 숫자 변환 불가 시 기본값 1. (IMP-C08)
+- `raw`에서 `Item`을 만드는 변환은 기존 `itemFromRaw(raw)` 계약을 재사용해 조회·검색·필터·정렬·상세·CSV가 seed와 동일하게 동작하도록 한다. (IMP-C13)
+
+#### 45.3 세션 마스터 교체 배선 (`app/page.tsx`)
+- `ImportView`는 `notify` 외에 `onImport(items:Item[])` 콜백을 props로 받는다.
+- 성공 시 현재 활성 공식 버전(`officialVersions[0]`)의 `rows`를 파싱된 `items`로 전량 교체한다. `setOfficialVersions`로 [0]번 스냅샷의 `rows`만 교체하고 version/date/owner/status는 유지한다. 이 값은 `currentOfficialRows`/`versionItems`를 통해 SBF 마스터·필터·상세·CSV에 즉시 반영된다. (IMP-C05, C13)
+- 상태는 React state로만 유지하므로 새로고침 시 `useState` 초기화로 seed(`items`)가 자동 복원된다. 별도 영속화(localStorage 등)는 하지 않는다. (IMP-C06)
+
+#### 45.4 미리보기 요약과 최근 가져오기 목록
+- 파싱 성공 후 마스터 교체 적용 전, 파일명·시트명·전체 데이터 행 수를 포함한 요약을 화면에 표시한다. (IMP-C09)
+- 최근 가져오기 작업 표는 하드코딩을 제거하고 세션 state 배열로 관리한다. 성공/실패 모든 시도에 파일명, 시트명, 전체 행 수, 실행일시, 상태(성공/실패)를 행으로 추가한다. (IMP-C10)
+
+#### 45.5 오류 처리와 원상 보존
+- 유효성 실패(IMP-C03/C11) 시 실패 원인별 오류 메시지를 구분해 표시하고 세션 마스터 rows를 변경하지 않는다. 화면 조회 데이터는 실패 이전 상태로 보존한다. (IMP-C11, C12)
+- 파일 선택 취소 시 마스터·화면 상태를 변경하지 않는다. (IMP-C01)
+
+#### 45.6 범위 한정
+- 본 기능은 MVP 클라이언트 전용이다. 운영/DB 단계에서는 IMP-01~08 및 VER-17 서버 파이프라인(업로드 → validate → preview → commit, `SbfVersion`/`SbfSnapshot` 영속화)으로 대체·확장한다. (IMP-C14)
+
+### 46. 파일 기반 영속 SBF 마스터 (모든 기기 공유)
+
+요구사항 그룹 PER-01~PER-09를 구현하기 위한 설계다. 서버/DB 없이 정적 JSON 파일(`public/sbf-master.json`)을 SBF 마스터 기본값의 단일 출처로 삼는다. 발행(PUBLISH VERSION) 시 스냅샷 JSON을 생성·다운로드하고, 담당자가 고정 경로에 배치·커밋하면 정적 재배포로 모든 기기에 반영된다. IMP-C(브라우저 가져오기)는 발행 전 세션 미리보기 계층으로 유지한다.
+
+#### 46.1 스냅샷 JSON 스키마
+- 파일명 고정: `sbf-master.json`. (PER-02)
+- 구조: `{ meta: { versionNo, publishedAt, publisher, reason, itemCount, sourceFile, sourceSheet }, iaHeaders: string[], items: Item[] }`. `items`는 `raw:string[]`를 포함해 기존 데이터 계약(`Item`/`raw`/`iaHeaders`)과 호환. (PER-03)
+- 스키마 버전 필드(예: `schemaVersion`)를 두어 향후 확장 시 로더가 검증할 수 있게 한다.
+
+#### 46.2 발행 시 스냅샷 생성·다운로드 (조각 1, 앱 자동화)
+- `app/extended-views.tsx`의 `VersionView` 발행 흐름(`publishVersion` → `onPublish(reason)`)에 스냅샷 생성 단계를 추가한다.
+- 발행 대상 데이터는 현재 활성 공식 버전(`officialVersions[0]`)의 `rows`와 `iaHeaders`, 그리고 발행 폼의 사유/버전/발행자 메타를 사용한다.
+- 직렬화한 JSON을 `Blob`으로 만들어 `URL.createObjectURL` + 앵커 클릭으로 `sbf-master.json`으로 자동 다운로드한다(브라우저 내 처리, 원격 쓰기 없음). (PER-01, PER-07)
+- 발행 완료 toast에 다음 단계 안내(`public/sbf-master.json`에 배치·커밋·재배포)를 포함한다.
+
+#### 46.3 앱 시작 시 파일 로딩 (조각 2, 로딩)
+- 앱 진입 시 `fetch('/sbf-master.json')`로 파일을 조회한다(빌드 시 `public/`가 사이트 루트로 서빙됨). (PER-04)
+- 로딩 상태 머신: `loading` → (성공) `ready` / (실패) `error`. 데이터 출처를 이 파일로 일원화하며 seed 조용한 폴백은 하지 않는다. (PER-05)
+- 성공 시 파싱한 `items`/`iaHeaders`를 SBF 마스터·필터·상세·CSV의 기본 데이터로 사용한다. 로딩된 값이 초기 `officialVersions[0].rows`를 대체한다.
+
+#### 46.4 오류 상태와 담당자 조치 안내 (PER-06)
+- 파일 없음(404)/네트워크 실패/JSON 파싱 실패/스키마 검증 실패를 원인별로 구분한다.
+- SBF 마스터 화면에 seed로 폴백하지 않고 명시적 오류 패널을 표시한다: 원인 문구 + 조치 안내(배포관리에서 발행 후 `public/sbf-master.json` 배치·커밋·재배포) + 재시도 버튼(재조회).
+- 재시도는 로딩 상태 머신을 `loading`으로 되돌려 `fetch`를 다시 수행한다.
+
+#### 46.5 배포 반영 규칙 (B-c 파일 기반 자동 배포)
+- 다운로드된 `sbf-master.json`을 리포 고정 경로 `public/sbf-master.json`에 배치하고 커밋하면 Netlify 정적 재배포로 모든 기기에 반영된다. (PER-07)
+- 위치·파일명 규칙과 절차를 배포 가이드 문서(README 또는 docs)에 명문화한다.
+- 브라우저에서 원격 파일을 직접 쓰지 않으며, 완전 자동 커밋(GitHub API/서버리스 함수)은 범위 외 확장 전제로만 참조한다. (PER-09)
+
+#### 46.6 IMP-C와의 관계
+- IMP-C 가져오기는 발행 전 세션 미리보기·검증 계층으로 유지한다(가져오기 → 확인 → 발행). IMP-C06의 세션 seed 복원 정책은 PER-05 파일 로딩으로 대체된다. (PER-08)
+
+#### 46.7 테스트 고려
+- 스냅샷 직렬화/역직렬화 라운드트립이 데이터 계약을 보존하는지(유닛).
+- 로더 상태 머신: 성공/404/파싱실패/스키마실패 각각에 대한 상태 전이와 오류 표기(유닛).
+- 로딩 성공 시 SBF 마스터/필터/상세/CSV가 파일 데이터로 동작하는지(렌더).
+
+### 47. 발행 버전 통제 및 가져오기 연동 배포
+
+요구사항 그룹 VPUB-01~VPUB-07을 구현한다. 가져오기(IMP-C)로 교체한 세션 데이터를 사용자가 통제한 버전 번호로 발행·배포할 수 있게 발행 흐름을 보정한다.
+
+#### 47.1 발행 데이터 소스 정정 (VPUB-01)
+- 현재 publishOfficialVersion은 스냅샷을 cloneRows(workingRows)로 생성하는데, 가져오기(IMP-C)는 officialVersions[0].rows를 교체하므로 발행에 가져온 데이터가 반영되지 않는 버그가 있다.
+- 발행 스냅샷 소스를 활성 공식 버전 rows(currentOfficialRows / officialVersions[0].rows)로 변경한다. workingRows 기반 승인 워크플로우 배포와 가져오기 기반 배포가 동일하게 활성 버전을 발행하도록 일원화한다.
+
+#### 47.2 버전 직접 입력 + 유추 기본값 (VPUB-02, VPUB-03, VPUB-04)
+- VersionView 발행 다이얼로그의 버전 번호 필드를 readOnly에서 편집 가능 입력으로 변경한다.
+- 기본값: 가져오기 시 확보한 버전 힌트(sessionVersionHint)가 있으면 그 값, 없으면 calculateNextVersion(activeOfficialVersion).
+- 버전 힌트 확보 경로(택1, 구현 시 확정): (a) ImportView에서 사용자가 버전을 입력받아 세션 state로 전달, (b) 파일명에서 vX.Y(.Z) 패턴을 유추. 최소한 (a)를 지원한다.
+- 입력값은 자유 형식 문자열을 허용해 3단 버전(2.7.1)도 통과시킨다.
+
+#### 47.3 발행 검증 (VPUB-05)
+- 제출 시 버전 문자열 trim 후 비어 있으면 오류. 기존 officialVersions에 동일 version이 있으면 중복 오류. 두 경우 발행 중단 + 안내 표시.
+
+#### 47.4 발행 버튼 활성화 조건 확대 (VPUB-06)
+- 세션에서 가져오기로 활성 버전이 교체되었는지 추적하는 플래그(예: importedThisSession)를 둔다. ImportView onImport 성공 시 true.
+- VersionView 발행 버튼 disabled 조건을 pendingCount===0에서 (pendingCount===0 && !importedThisSession)로 완화한다. draft-banner 문구도 가져오기 반영 상태를 반영하도록 보정한다.
+
+#### 47.5 메타 기록 (VPUB-07)
+- 다운로드 파일명은 PER-02대로 고정 sbf-master.json. serializeSnapshot meta.versionNo에는 사용자가 통제한 버전 번호를 기록한다. 발행 결과 officialVersions[0].version도 동일 값으로 설정한다.
